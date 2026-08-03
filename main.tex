@@ -1,76 +1,67 @@
-\documentclass[conference]{IEEEtran}
-\IEEEoverridecommandlockouts
+\documentclass[pdflatex,sn-mathphys-num]{sn-jnl}
 
-\usepackage{cite}
-\usepackage{amsmath,amssymb,amsfonts}
-\usepackage{algorithmic}
 \usepackage{graphicx}
-\usepackage{textcomp}
+\usepackage{multirow}
+\usepackage{amsmath,amssymb,amsfonts}
 \usepackage{xcolor}
-\usepackage{booktabs, longtable, multirow, array, caption}
+\usepackage{textcomp}
+\usepackage{booktabs}
+\usepackage{longtable, array}
 
 \graphicspath{{figures/}}
 
+\raggedbottom
+
 \begin{document}
 
-\title{Livestock Sector Forecasting in Kenya: A Cohort-Based Quarterly Analysis on Population, Production, and Feed Demand}
+\title[Livestock Sector Forecasting in Kenya]{Livestock Sector Forecasting in Kenya: A Cohort-Based Quarterly Analysis on Population, Production, and Feed Demand}
 
-\author{\IEEEauthorblockN{1\textsuperscript{st} Natasha Wavomba}
-\IEEEauthorblockA{\textit{@iLabAfrica} \\
-\textit{Strathmore University}\\
-Nairobi, Kenya \\
-ORCID}
-\and
-\IEEEauthorblockN{2\textsuperscript{nd} Maria Ogamba}
-\IEEEauthorblockA{\textit{@iLabAfrica} \\
-\textit{Strathmore University}\\
-Nairobi, Kenya \\
-ORCID}
-\and
-\IEEEauthorblockN{3\textsuperscript{rd} Lorraine Atsulu}
-\IEEEauthorblockA{\textit{@iLabAfrica} \\
-\textit{Strathmore University}\\
-Nairobi, Kenya \\
-ORCID}
-\and
-\IEEEauthorblockN{4\textsuperscript{th} Joseph Gitonga}
-\IEEEauthorblockA{\textit{@iLabAfrica} \\
-\textit{Strathmore University}\\
-Nairobi, Kenya \\
-ORCID}
-\and
-\IEEEauthorblockN{5\textsuperscript{th} John Olukuru}
-\IEEEauthorblockA{\textit{@iLabAfrica} \\
-\textit{Strathmore University}\\
-Nairobi, Kenya \\
-ORCID}
-\and
-\IEEEauthorblockN{6\textsuperscript{th} Joseph Sevilla}
-\IEEEauthorblockA{\textit{@iLabAfrica} \\
-\textit{Strathmore University}\\
-Nairobi, Kenya \\
-ORCID}
-}
+\author*[1]{\fnm{Natasha} \sur{Wavomba}}% ORCID: TBD
+\author[1]{\fnm{Maria} \sur{Ogamba}}% ORCID: TBD
+\author[1]{\fnm{Lorraine} \sur{Eyinda}}% ORCID: TBD
+\author[1]{\fnm{Joseph} \sur{Gitonga}}% ORCID: TBD
+\author[1]{\fnm{John} \sur{Olukuru}}% ORCID: TBD
+\author[1]{\fnm{Joseph} \sur{Sevilla}}% ORCID: TBD
+
+\affil*[1]{\orgdiv{@iLabAfrica}, \orgname{Strathmore University}, \orgaddress{\city{Nairobi}, \country{Kenya}}}
+
+\abstract{\input{sections/00_abstract}}
+
+\keywords{Livestock model forecasting, carrying capacity, biological parameters}
 
 \maketitle
 
-\begin{abstract}
-\input{sections/00_abstract}
-\end{abstract}
-
-\begin{IEEEkeywords}
-Livestock model forecasting, carrying capacity, biological parameters
-\end{IEEEkeywords}
-
 \input{sections/01_introduction}
-\input{sections/02_related_work}
+\input{sections/02_literature_review}
 \input{sections/03_methodology}
 \input{sections/04_results}
-\input{sections/05_conclusion}
+\input{sections/05_discussion}
+\input{sections/06_implications}
+\input{sections/07_limitations}
+\input{sections/08_conclusion}
 
-\input{sections/appendix.tex}
+\backmatter
 
-\bibliographystyle{IEEEtran}
+\bmhead{Acknowledgements}
+\input{sections/acknowledgements}
+
+\section*{Declarations}
+
+\begin{itemize}
+\item Funding: Not applicable
+\item Conflict of interest/Competing interests: Not applicable
+\item Ethics approval and consent to participate: Not applicable
+\item Consent for publication: Not applicable
+\item Data availability: Not applicable
+\item Materials availability: Not applicable
+\item Code availability: Not applicable
+\item Author contribution: Not applicable
+\end{itemize}
+
+\begin{appendices}
+\input{sections/appendix}
+\end{appendices}
+
 \bibliography{references/references}
 
 \end{document}
