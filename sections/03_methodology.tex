@@ -1,3 +1,195 @@
 \section{Methodology}
 
-Write methodology here.
+\subsection{Overview}
+
+Eight value chains (both ruminant and non-ruminant animals) were selected on the basis of their contribution to Kenya's agricultural GDP.\footnote{Citation required, get from Natasha}
+For each chain, forecasting covers three domains: \textbf{population dynamics}, \textbf{production volumes}, and \textbf{feed demand}. The baseline year is 2019; the projection horizon runs from 2020 to 2041, with 2020--2025 retained for model validation against observed values.
+
+A first-principles modelling approach was adopted. This choice reflects (i) the transparency and auditability it affords where each intermediate quantity is directly traceable to its inputs, and (ii) the heterogeneous, multi-source nature of the available data, which precludes the large homogeneous datasets required by machine-learning methods.
+
+Parameters were compiled from peer-reviewed literature, government publications, and sector reports, then validated by livestock experts from the Ministry, associations, and farmers. Accepted values are listed in Appendix~1.\footnote{Summarize parameters}
+
+The model operates on a quarterly time step. For each quarter, the three domains are computed in sequence.
+
+% ─────────────────────────────────────────────
+\subsection{Population Model Equations}
+Population is tracked across a defined cohort structure specific to each value chain. Within each quarter, the following processes are applied in order where relevant: mortality, culling, offtake, transition to the next age cohort, and births. The starting population for each cohort is updated by sequentially applying the corresponding rates, with inflows from younger cohorts and new births added at the end of the period.
+
+\subsubsection{Beef Cattle}
+\begin{equation}
+P(t+1) = \bigl[P(t)\,(1 - m_q)(1 - k_q)(1 - o_q)\bigr] + G(t) - E(t) + B(t)
+\end{equation}
+
+{\small
+\begin{tabular}{@{}p{0.13\columnwidth}@{\;}p{0.33\columnwidth}@{\enspace}p{0.13\columnwidth}@{\;}p{0.33\columnwidth}@{}}
+$P(t)$   & Starting pop.          & $m_q$  & Mortality rate (qtr.) \\
+$P(t+1)$ & Ending pop.            & $k_q$  & Culling rate \\
+$G(t)$   & Inflow (young cohort)  & $o_q$  & Offtake rate (steers) \\
+$E(t)$   & Outflow to next cohort & $B(t)$ & New births (calves) \\
+\end{tabular}}
+
+\subsubsection{Goats}
+\begin{equation}
+P(t+1) = \bigl[P(t)\,(1 - m_q)(1 - k_q)\bigr] + G(t) - E(t) + B(t)
+\end{equation}
+
+Variable definitions follow the same convention as beef cattle; the offtake term $o_q$ does not apply.
+
+\subsubsection{Camels}
+\begin{equation}
+P(t+1) = P(t) - D(t) - C(t) - O(t) + B(t)
+\end{equation}
+
+{\small
+\begin{tabular}{@{}p{0.13\columnwidth}@{\;}p{0.33\columnwidth}@{\enspace}p{0.13\columnwidth}@{\;}p{0.33\columnwidth}@{}}
+$D(t)$ & Natural mortality  & $C(t)$ & Culling offtake \\
+$O(t)$ & Commercial offtake & $B(t)$ & Births in period $t$ \\
+\end{tabular}}
+
+\subsubsection{Poultry}
+
+Three sub-sectors are modelled separately. $T_{\mathrm{bro}}$ denotes annual broiler throughput and $S_r$ the rearing survival rate.
+\begin{align}
+P_{\mathrm{ind}}(t+1) &= P_{\mathrm{ind}}(t) - E_{\mathrm{ind}}(t) + R_{\mathrm{ind}}(t) + A(t) \\
+P_{\mathrm{lay}}(t+1) &= P_{\mathrm{lay}}(t) - E_{\mathrm{lay}}(t) + \mathrm{DOC}(t) \times S_r \\
+T_{\mathrm{bro}}(t+1) &= T_{\mathrm{bro}}(t) + A(t)
+\end{align}
+
+The sector addition term $A(t)$ and its sigmoid growth modifier $g(t)$ are:
+\begin{align}
+A(t) &= P(t)\,(r_{\mathrm{ent}} + r_{\mathrm{exp}})\,g(t) \\
+g(t) &= g_{\min} + (g_{\max} - g_{\min})\,\exp\!\left(-\kappa^2\,\frac{(t-t_0)^2}{2}\right)
+\end{align}
+
+\subsubsection{Apiculture}
+\begin{equation}
+H(t+1) = H(t)\,(1 - \delta(t))(1 - \rho(t)) + S(t)
+\end{equation}
+
+{\small
+\begin{tabular}{@{}p{0.13\columnwidth}@{\;}p{0.33\columnwidth}@{\enspace}p{0.13\columnwidth}@{\;}p{0.33\columnwidth}@{}}
+$\delta(t)$ & Seasonal colony loss    & $\rho(t)$ & Queen replacement rate \\
+$S(t)$      & New colonies (swarming) &           & \\
+\end{tabular}}
+
+\subsubsection{Pigs}
+\begin{equation}
+P(t+1) = P(t) - D(t) - C(t) - O(t) + B(t) + R(t)
+\end{equation}
+
+where $R(t)$ represents replacement additions to the breeding herd. Variable definitions for $D(t)$, $C(t)$, $O(t)$, $B(t)$ follow the camel convention.
+
+\subsubsection{Rabbits}
+
+Rabbits follow the same population equation as pigs (including $R(t)$).
+
+% ─────────────────────────────────────────────
+\subsection{Production Model Equations}
+Production volumes are derived from the population state at the end of each quarter. Each value chain has a distinct production equation reflecting the commodity it yields, that is meat, milk, eggs, honey, or wax, as detailed in Sections II-B through II-C. \footnote{Update the section names} 
+For ruminants, production is computed separately for each cohort and then aggregated. For poultry, the three sub-sectors are modelled independently. Apiculture production is calculated at the hive level and then scaled by the number of hives.
+
+\subsubsection{Beef Cattle}
+\begin{equation}
+\text{Beef (kg)} = \sum_{c} N_c \times \mathrm{LW}_c \times \mathrm{DP}_c
+\end{equation}
+
+where $c \in \{\text{steers, cull cows, cull bulls}\}$, $\mathrm{LW}$ is live weight (kg) and $\mathrm{DP}$ is dressing percentage.
+
+\subsubsection{Goats}
+\begin{align}
+\text{Meat (kg)} &= (N_{\text{removed}} + N_{\text{excess bucks}}) \times \mathrm{LW} \times \mathrm{DP} \\[2pt]
+\text{Milk (kg)} &= N_{\text{does}} \times f_L \times Y_d \times D_L
+\end{align}
+
+{\small
+\begin{tabular}{@{}p{0.22\columnwidth}@{\;}p{0.72\columnwidth}@{}}
+$N_{\text{does}}$         & Surviving does \\
+$f_L$, $Y_d$, $D_L$       & Lactating fraction; daily yield (kg); lactation days \\
+$N_{\text{excess bucks}}$ & Bucks above 4\% herd cap, removed for slaughter \\
+\end{tabular}}
+
+\subsubsection{Camels}
+\begin{align}
+\text{Milk (kg yr}^{-1}) &= N_{\text{adult females}} \times f_L \times Y_d \times 365 \\[2pt]
+\text{Meat (kg)}         &= \sum_{c} N_c \times \mathrm{LW}_c \times \mathrm{DP}_c
+\end{align}
+
+where $c \in \{\text{juv.\ offtake, adult offtake, cull adults}\}$.
+
+\subsubsection{Poultry}
+\begin{align}
+\text{Eggs}_{\mathrm{ind}}(t) &= P(t) \times f_{\mathrm{fem}} \times Y_e \\
+\text{Eggs}_{\mathrm{lay}}(t) &= P(t) \times \eta_{\mathrm{HD}} \times 365 \\
+\text{Meat (kg)}              &= T_{\mathrm{bro}} \times \mathrm{LW} \times \mathrm{DP}
+\end{align}
+
+where $f_{\mathrm{fem}}$ is female share, $Y_e$ is eggs per hen per year, and $\eta_{\mathrm{HD}}$ is hen-day production rate.
+
+\subsubsection{Apiculture}
+\begin{align}
+\text{Honey}_{h,q} &= H_h \cdot \frac{Y_h}{4} \cdot \bar{s} \cdot (1 - \varphi) \cdot \Omega(t) \cdot \varepsilon_h \\
+\text{Wax}_{h,q}   &= \text{Honey}_{h,q} \times \omega_h \\
+\text{Nectar}_{h,q}&= H_h \cdot \frac{N_h}{4} \cdot \bar{s} \cdot \phi_q \cdot \nu_q \cdot \Omega(t)
+\end{align}
+
+{\small
+\begin{tabular}{@{}p{0.22\columnwidth}@{\;}p{0.72\columnwidth}@{}}
+$Y_h$, $\bar{s}$   & Annual yield/hive (kg); effective colony strength \\
+$\varphi$          & Forage competition penalty (0--0.20) \\
+$\varepsilon_h$    & Hive-type efficiency factor \\
+$\Omega(t)$        & Technology/training improvement (sigmoid) \\
+$\omega_h$         & Wax-to-honey ratio \\
+$\phi_q$, $\nu_q$  & Quarterly forage and nectar seasonality factors \\
+\end{tabular}}
+
+\subsubsection{Pigs and Rabbits}
+\begin{equation}
+\text{Meat} = N_{\text{slaughtered}} \times \mathrm{LW} \times \mathrm{DP}
+\end{equation}
+
+% ─────────────────────────────────────────────
+\subsection{Feed Model Equations}
+Feed demand is estimated using dry matter intake (DMI) for all value chains. A DMI-based approach was adopted due to limited availability of detailed ration composition data across most value chains; it provides a consistent and tractable basis for estimating feed requirements from population and live weight alone. The specific formulations vary by value chain and are presented in Section II-D.
+
+\subsubsection{Beef Cattle, Pigs, and Rabbits}
+
+All three value chains use the same daily dry matter intake (DMI) formulation:
+\begin{equation}
+\mathrm{DMI} = P(t) \times \mathrm{LW} \times r_{\mathrm{DMI}} \times 365
+\end{equation}
+
+where $r_{\mathrm{DMI}}$ is daily dry matter intake as a proportion of body weight.
+
+\subsubsection{Goats}
+
+Feed is summed across cohorts (kids, weaners, growers, does, bucks):
+\begin{equation}
+\text{Feed}(t) = \sum_{\text{cohort}} N_c \times \mathrm{BW}_c \times r_{\mathrm{DMI},c} \times D
+\end{equation}
+
+where $D$ is the number of days in the period.
+
+\subsubsection{Camels}
+
+Feed is accumulated quarterly, with intake weighted by average live weight over the quarter:
+\begin{equation}
+\text{Annual feed} = \sum_{q=1}^{4} \text{Feed}_q
+\end{equation}
+\begin{equation}
+\text{Feed}_q = \sum_{\text{cohort}} N_c \times \left(\frac{\mathrm{BW}_{0,c} + \mathrm{ADG}_c \times 90}{2}\right) \times r_{\mathrm{DMI},c} \times 90
+\end{equation}
+
+where $\mathrm{ADG}$ is average daily gain (kg\,d$^{-1}$).
+
+\subsubsection{Poultry}
+
+Each sub-sector has a distinct feed equation reflecting its production cycle structure:
+\begin{align}
+F_{\mathrm{ind}}(t) &= \bigl[R(t)(f_{\mathrm{chk}}\,d_{\mathrm{chk}} + f_{\mathrm{gr}}\,d_{\mathrm{gr}}) \notag \\
+                    &\quad + P(t)\,f_{\mathrm{ad}}\,365\bigr](1-\sigma)^t \\
+F_{\mathrm{lay}}(t) &= \mathrm{DOC}(t)(f_{\mathrm{chk}}\,d_{\mathrm{chk}} + f_{\mathrm{pul}}\,d_{\mathrm{pul}}) \notag \\
+                    &\quad + P(t)\,f_{\mathrm{hen}}\,365 \\
+F_{\mathrm{bro}}    &= N_{\mathrm{birds}} \sum_{\text{phase}} f_{\text{phase}} \times d_{\text{phase}} \times C_{\mathrm{yr}}
+\end{align}
+
+where $f_{(\cdot)}$ is phase-specific intake (kg\,d$^{-1}$), $d_{(\cdot)}$ is phase duration (days), $\sigma$ is the scavenging offset, and $C_{\mathrm{yr}}$ is production cycles per year.

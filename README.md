@@ -1,6 +1,6 @@
-# LaTeX Document Management — IEEE Template
+# LaTeX Document Management — Springer Nature Template
 
-This repository uses the official **IEEE conference/journal LaTeX template**. Do not substitute or modify the template class file (`IEEEtran.cls`). All formatting — column layout, font sizes, heading styles, caption formatting, and bibliography style — is governed by the template and must not be overridden with manual formatting commands.
+This repository uses the official **Springer Nature (`sn-jnl`) LaTeX template**, configured for the Math and Physical Sciences numbered reference style (`sn-mathphys-num`). Do not substitute or modify the template class file (`sn-jnl.cls`) or the `.bst` files in `bst/`. All formatting — layout, font sizes, heading styles, caption formatting, and bibliography style — is governed by the template and must not be overridden with manual formatting commands.
 
 ---
 
@@ -65,11 +65,10 @@ Better BibTeX (BBT) handles the automatic, continuous export of your Zotero libr
 
 Each contributor maintains a **personal `.bib` file** that auto-exports from their local Zotero library. This eliminates merge conflicts during active writing. When work is ready for integration, references are promoted to the shared `references/references.bib` via a manual export from the group library.
 
-IEEE uses numeric citations rendered as `[1]`, `[2]`, etc. The bibliography style is fixed in `main.tex` and must not be changed:
+The `sn-mathphys-num` class option renders numeric citations as `[1]`, `[2]`, etc., and sets the bibliography style (`sn-mathphys-num.bst`) automatically — do not add a manual `\bibliographystyle` command. The bibliography source is fixed in `main.tex` and must not be changed:
 
 ```latex
-\bibliographystyle{IEEEtran}
-\bibliography{IEEEabrv,references/references}
+\bibliography{references/references}
 ```
 
 During the personal workflow phase, each contributor temporarily points their local build at their own `.bib` file. The `main.tex` on `main` branch always references `references/references.bib`.
@@ -104,7 +103,7 @@ BBT will now update your file automatically whenever your local Zotero library c
 On your working branch, temporarily adjust the bibliography command in your local `main.tex` to include your personal file:
 
 ```latex
-\bibliography{IEEEabrv,references/maria,references/references}
+\bibliography{references/maria,references/references}
 ```
 
 LaTeX resolves citation keys across all listed `.bib` files. Keys present in your personal file but not yet in `references/references.bib` will resolve correctly in local builds.
@@ -230,9 +229,10 @@ Resolve any merge conflicts before pushing.
 
 ```
 .
-├── main.tex                  # Root LaTeX document (IEEE template entry point)
-├── IEEEtran.cls              # IEEE class file — do not modify
-├── IEEEabrv.bib              # IEEE journal title abbreviations — do not modify
+├── main.tex                  # Root LaTeX document (Springer Nature template entry point)
+├── sn-jnl.cls                # Springer Nature class file — do not modify
+├── bst/                      # Full set of Springer Nature .bst reference styles — do not modify
+├── .latexmkrc                # Points BSTINPUTS at bst/ so bibtex finds sn-mathphys-num.bst
 ├── references/
 │   └── references.bib        # Auto-exported by Zotero/Better BibTeX
 ├── sections/                 # Individual .tex section files
@@ -244,11 +244,7 @@ Resolve any merge conflicts before pushing.
 
 > `output/` must be listed in `.gitignore`. Compiled PDFs are build artefacts, not source files.
 
-> `IEEEtran.cls` and `IEEEabrv.bib` are part of the official IEEE template distribution. Neither file should be edited. `IEEEabrv.bib` provides standardised abbreviated journal names required by `IEEEtran` bibliography style — reference it in your bibliography command if abbreviated journal names are needed:
-
-```latex
-\bibliography{IEEEabrv,references/references}
-```
+> `sn-jnl.cls` and the `.bst` files are part of the official Springer Nature template distribution and mirror its own folder layout (class file at root, all `.bst` styles kept together in `bst/`) — neither should be edited. Rather than duplicating the active `.bst` file at the root (the officially-documented but repo-cluttering approach), this repo's `.latexmkrc` extends `BSTINPUTS` so `bibtex` finds `bst/sn-mathphys-num.bst` directly. If you compile with a plain `bibtex` invocation instead of `latexmk`, either run it from a shell with that same `BSTINPUTS` export, or let `latexmk`/LaTeX Workshop drive the build as usual.
 
 ---
 
@@ -263,7 +259,7 @@ The compiled PDF opens in the side panel. If compilation fails, check the LaTeX 
 
 ### Compilation Order
 
-IEEE documents with a bibliography require the following compilation sequence to resolve all cross-references and citation numbers correctly:
+Documents with a bibliography require the following compilation sequence to resolve all cross-references and citation numbers correctly:
 
 ```
 pdflatex → bibtex → pdflatex → pdflatex
@@ -271,13 +267,16 @@ pdflatex → bibtex → pdflatex → pdflatex
 
 LaTeX Workshop handles this automatically when configured with the `latexmk` recipe (default). If references show as `[?]` in the output, run a full build rather than a single-pass compile.
 
-### IEEE-Specific Constraints
+### Springer Nature-Specific Constraints
 
-The following are hard constraints imposed by the IEEE template and editorial requirements. Non-compliant submissions are rejected without review.
+The following are hard constraints imposed by the Springer Nature template and editorial requirements. Non-compliant submissions are rejected without review.
 
-- **Two-column layout** is enforced by `IEEEtran.cls`. Do not insert single-column overrides except for wide figures or tables using the `figure*` / `table*` environments.
+- **Single-column layout** is the default under `sn-mathphys-num`. Do not switch to the `twocolumn` class option without confirming the target journal requires it.
 - **No custom fonts**. The template defines the font stack. Do not add `fontspec`, `setmainfont`, or equivalent commands.
 - **No manual spacing adjustments** (`\vspace`, `\hspace`, `\enlargethispage`) used to manipulate layout for page count.
-- **Figure captions** go below the figure. Table captions go above the table. This is enforced by IEEE style, not the class file — apply it consistently.
-- **Page limit** is submission-specific. Check the call for papers. The compiled PDF page count on `main` must comply before a PR is merged.
-- **Author information** in `main.tex` must be removed or anonymised for double-blind submissions. Confirm the submission type before final build.
+- **Figure and table captions** both go above/below per the template's built-in `\caption` styling (figure captions below the figure, table captions above the table) — do not override caption placement or formatting.
+- **Tables** use `\toprule`/`\midrule`/`\botrule` (not `booktabs`' `\bottomrule`) to match the template's rule spacing.
+- **Page limit** is submission-specific. Check the target journal's author instructions. The compiled PDF page count on `main` must comply before a PR is merged.
+- **Declarations section** (Funding, Conflict of interest, Ethics approval, Consent for publication, Data/Materials/Code availability, Author contribution) is required in `main.tex` before submission — placeholders must be replaced with real statements or "Not applicable".
+- **Author information** in `main.tex` (given/family names, affiliations, ORCID, corresponding-author email) must be finalised — and removed or anonymised for double-blind submissions — before final build. Confirm the submission type before final build.
+- **Do not use `\input{...}`** for the final submission manuscript per Springer Nature's packaging requirement (see comment at the top of the original `sn-article.tex`); the modular `sections/*.tex` structure is fine for drafting but must be flattened into a single `.tex` file before submission.
