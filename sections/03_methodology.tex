@@ -2,12 +2,12 @@
 
 \subsection{Overview}
 
-Eight value chains (both ruminant and non-ruminant animals) were selected on the basis of their contribution to Kenya's agricultural GDP.\footnote{Citation required, get from Natasha}
-For each chain, forecasting covers three domains: \textbf{population dynamics}, \textbf{production volumes}, and \textbf{feed demand}. The baseline year is 2019; the projection horizon runs from 2020 to 2041, with 2020--2025 retained for model validation against observed values.
+Nine value chains (both ruminant and non-ruminant animals) were selected on the basis of their contribution to Kenya's agricultural GDP \citep{behnke2011}.
+For each chain, forecasting covers three domains: \textbf{population dynamics}, \textbf{production volumes}, and \textbf{feed demand}. The baseline year is 2019; the projection horizon runs from 2020 to 2041.
 
 A first-principles modelling approach was adopted. This choice reflects (i) the transparency and auditability it affords where each intermediate quantity is directly traceable to its inputs, and (ii) the heterogeneous, multi-source nature of the available data, which precludes the large homogeneous datasets required by machine-learning methods.
 
-Parameters were compiled from peer-reviewed literature, government publications, and sector reports, then validated by livestock experts from the Ministry, associations, and farmers. Accepted values are listed in Appendix~1.\footnote{Summarize parameters}
+Parameters were compiled from peer-reviewed literature, government publications, and sector reports, then validated by livestock experts from the Ministry, associations, and farmers. Accepted values and their sources are published as a supplementary dataset \citep{DVN/K9GXOP_2026}.
 
 The model operates on a quarterly time step. For each quarter, the three domains are computed in sequence.
 
@@ -85,7 +85,7 @@ Rabbits follow the same population equation as pigs (including $R(t)$).
 
 % ─────────────────────────────────────────────
 \subsection{Production Model Equations}
-Production volumes are derived from the population state at the end of each quarter. Each value chain has a distinct production equation reflecting the commodity it yields, that is meat, milk, eggs, honey, or wax, as detailed in Sections II-B through II-C. \footnote{Update the section names} 
+Production volumes are derived from the population state at the end of each quarter. Each value chain has a distinct production equation reflecting the commodity it yields, that is meat, milk, eggs, honey, or wax.
 For ruminants, production is computed separately for each cohort and then aggregated. For poultry, the three sub-sectors are modelled independently. Apiculture production is calculated at the hive level and then scaled by the number of hives.
 
 \subsubsection{Beef Cattle}
@@ -149,7 +149,7 @@ $\phi_q$, $\nu_q$  & Quarterly forage and nectar seasonality factors \\
 
 % ─────────────────────────────────────────────
 \subsection{Feed Model Equations}
-Feed demand is estimated using dry matter intake (DMI) for all value chains. A DMI-based approach was adopted due to limited availability of detailed ration composition data across most value chains; it provides a consistent and tractable basis for estimating feed requirements from population and live weight alone. The specific formulations vary by value chain and are presented in Section II-D.
+Feed demand is estimated using dry matter intake (DMI) for all value chains. A DMI-based approach was adopted due to limited availability of detailed ration composition data across most value chains; it provides a consistent and tractable basis for estimating feed requirements from population and live weight alone. The specific formulations vary by value chain, as detailed below.
 
 \subsubsection{Beef Cattle, Pigs, and Rabbits}
 

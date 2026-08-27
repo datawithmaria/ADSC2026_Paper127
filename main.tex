@@ -1,14 +1,17 @@
 \documentclass[pdflatex,sn-mathphys-num]{sn-jnl}
 
 \usepackage{graphicx}
-\usepackage{multirow}
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{xcolor}
 \usepackage{textcomp}
 \usepackage{booktabs}
-\usepackage{longtable, array}
 
-\graphicspath{{figures/}}
+\setlength{\textfloatsep}{6pt plus 2pt minus 4pt}
+\setlength{\floatsep}{4pt plus 2pt minus 2pt}
+\setlength{\intextsep}{4pt plus 2pt minus 2pt}
+\setlength{\abovecaptionskip}{4pt}
+\setlength{\belowcaptionskip}{2pt}
+\renewcommand{\arraystretch}{0.88}
 
 \raggedbottom
 
@@ -16,18 +19,18 @@
 
 \title[Livestock Sector Forecasting in Kenya]{Livestock Sector Forecasting in Kenya: A Cohort-Based Quarterly Analysis on Population, Production, and Feed Demand}
 
-\author*[1]{\fnm{Natasha} \sur{Wavomba}}% ORCID: TBD
-\author[1]{\fnm{Maria} \sur{Ogamba}}% ORCID: TBD
-\author[1]{\fnm{Lorraine} \sur{Eyinda}}% ORCID: TBD
-\author[1]{\fnm{Joseph} \sur{Gitonga}}% ORCID: TBD
-\author[1]{\fnm{John} \sur{Olukuru}}% ORCID: TBD
-\author[1]{\fnm{Joseph} \sur{Sevilla}}% ORCID: TBD
+\author*[1]{\fnm{Natasha} \sur{Wavomba}}% ORCID: 0000-0000-0000-0000
+\author[1]{\fnm{Maria} \sur{Ogamba}}% ORCID: 0009-0006-5814-4009
+\author[1]{\fnm{Lorraine} \sur{Eyinda}}% ORCID: 0000-0000-0000-0000
+\author[1]{\fnm{Joseph} \sur{Gitonga}}% ORCID: 0000-0002-0607-2828
+\author[1]{\fnm{John} \sur{Olukuru}}% ORCID: 0000-0002-8534-2346
+\author[1]{\fnm{Joseph} \sur{Sevilla}}% ORCID: 0000-0002-9112-824X
 
 \affil*[1]{\orgdiv{@iLabAfrica}, \orgname{Strathmore University}, \orgaddress{\city{Nairobi}, \country{Kenya}}}
 
 \abstract{\input{sections/00_abstract}}
 
-\keywords{Livestock model forecasting, carrying capacity, biological parameters}
+\keywords{Livestock model forecasting, cohort population model, biological parameters}
 
 \maketitle
 
@@ -41,13 +44,6 @@
 
 \backmatter
 
-\bmhead{Acknowledgements}
-\input{sections/acknowledgements}
-
-\begin{appendices}
-\input{sections/appendix}
-\end{appendices}
-
-\bibliography{references/references}
+\bibliography{references}
 
 \end{document}
